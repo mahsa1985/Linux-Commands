@@ -1,0 +1,38 @@
+#install sra-toolkit
+mahsa@Saliani:~$ sudo apt-get install sra-toolkit
+
+#download RNA sequencing data from SRA
+C:\Users\User\Desktop\sratoolkit.3.0.1-win64\bin>prefetch SRR1756569
+
+#conversion of sra to fastq format by fastq-dump
+mahsa@Saliani:~$ fastq-dump --split-3 SRR1756569
+
+#check the quality of reads by fastqc
+mahsa@Saliani:~$ sudo apt-get install fastqc
+mahsa@Saliani:~$ fastqc SRR1756569
+
+
+#install flexbar for read trimming and filtering
+mahsa@Saliani:~$ sudo apt-get install flexbar
+
+#read trimming and filtering by flexbar
+mahsa@Saliani:~$ flexbar --reads SRR1756569_1.fq --reads2 SRR1756569_2.fq --max-uncalled 2  --pre-trim-left 1 --pre-trim-right 19 -qf i1.8
+
+#read trimming and filtering by trimmomatic
+mahsa@Saliani:~$ java -jar trimmomatic-0.39.jar PE /home/mahsa/Documents/SRR8615504_1.fastq /home/mahsa/Documents/SRR8615504_2.fastq –baseout /home/mahsa/Documents/trimmomaticoutput SLIDINGWINDOW:4:15 MINLEN:45
+
+#install bowtie2
+mahsa@Saliani:~$ sudo apt-get install bowtie2
+
+#indexing of genome reference by bowtie2-build
+mahsa@Saliani:~/Documents/reference genome$ bowtie2-build -q Homo_sapiens.GRCh38.dna.toplevel.fa.gz hsa
+
+#mapping with bowtie2
+bowtie2 -t -x hsa -1 /home/mahsa/Documents/flexbarOut_1.good.fq -2 /home/mahsa/Documents/flexbarOut_2.good.fq -S /home/mahsa/Documents/mappingoutput1756569
+
+#read count and annotation by htseq-count
+htseq-count --idattr=gene_id /home/mahsa/Documents/HCT116/mappingoutput1756569 Homo_sapiens.GRCh38.97.gtf > hteseqcount1756569
+
+
+
+
